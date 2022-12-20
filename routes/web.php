@@ -1,26 +1,30 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+function isManager() {
+    return Auth::user()->role->name === 'manager';
+}
 
-Route::get('/', function () {
-    return view('welcome');
-});
+function isReqUserManager(Request $request) {
+    return $request->user()->role->name === 'manager';
+}
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/', function (Request $request) {
+    return isReqUserManager($request) ? redirect('manager') : redirect('client');
+})->middleware('auth');
+
+Route::get('/manager', function (Request $request) {
+    return isReqUserManager($request) ? view('manager') : redirect('client');
+})->middleware(['auth', 'verified'])->name('manager');
+
+Route::get('/client', function (Request $request) {
+    return isReqUserManager($request) ? redirect('manager') : view('client');
+})->middleware(['auth', 'verified'])->name('client');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
