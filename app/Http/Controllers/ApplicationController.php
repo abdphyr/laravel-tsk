@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ApplicationCreatedMail;
 use App\Models\Application;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class ApplicationController extends Controller
 {
@@ -26,6 +29,9 @@ class ApplicationController extends Controller
             'message' => $request->message,
             'file_url' => $path ?? null
         ]);
+        $manager  = User::first();
+
+        Mail::to($manager)->queue((new ApplicationCreatedMail($application))->delay(10));
         return redirect()->back();
     }
 }
