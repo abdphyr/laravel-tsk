@@ -2,13 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreApplicationRequest;
 use App\Jobs\ApplicationCreatedMailJob;
 use App\Models\Application;
 use Illuminate\Http\Request;
 
 class ApplicationController extends Controller
 {
-    public function store(Request $request)
+
+    public function index()
+    {
+        $applications = auth()->user()->applications()->latest()->paginate(3);
+        return view('applications')->with(['applications' => $applications]);
+    }   
+
+    public function store(StoreApplicationRequest $request)
     {
 
         if ($this->isMaySendApplication($request))
@@ -18,12 +26,6 @@ class ApplicationController extends Controller
             $file_name = $request->file('file')->getClientOriginalName();
             $path = $request->file('file')->storeAs('files', $file_name, 'public');
         }
-
-        $request->validate([
-            'subject' => 'required|max:255',
-            'message' => 'required',
-            'file' => 'nullable|file|mimes:jpg,png,pdf'
-        ]);
 
         $application = Application::create([
             'user_id' => auth()->user()->id,
@@ -45,8 +47,8 @@ class ApplicationController extends Controller
         if ($oldApplication) {
             $created = strtotime($oldApplication->created_at);
             $now = strtotime(now());
-            return $now - $created <= 86400;
-            // return $now - $created <= 10;
+            // return $now - $created <= 86400;
+            return $now - $created <= 10;
         }
         return false;
     }

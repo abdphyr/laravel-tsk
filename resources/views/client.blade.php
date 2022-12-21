@@ -38,7 +38,6 @@
                         class="py-3 px-6 my-2 bg-emerald-500 text-white font-medium rounded hover:bg-indigo-500 cursor-pointer ease-in-out duration-300"
                         value="Send">
                 </form>
-
             </div>
         </div>
     </div>
