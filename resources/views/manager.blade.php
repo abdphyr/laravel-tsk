@@ -18,7 +18,7 @@
                                 # {{ $item->id }}
                             </button>
                             <div class="text-xs text-neutral-500">
-                                {{ $item->created_at }}
+                                {{ date('Y/m/d:m', strtotime($item->created_at) + 86400 - 86400) }}
                             </div>
                         </div>
                     </div>

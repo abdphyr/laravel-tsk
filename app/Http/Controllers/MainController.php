@@ -15,7 +15,6 @@ class MainController extends Controller
     public function manager(Request $request)
     {
         $apps = Application::latest()->paginate(3);
-
         return $this->isManager($request) ?
             view('manager')->with(['applications' => $apps]) : redirect('client');
     }
@@ -24,6 +23,7 @@ class MainController extends Controller
     {
         return $this->isManager($request) ? redirect('manager') : view('client');
     }
+
 
     private function isManager($request)
     {
