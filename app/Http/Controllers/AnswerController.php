@@ -21,7 +21,9 @@ class AnswerController extends Controller
         $answer = $application->answer()->create([
             "body" => $request->body
         ]);
+
         AnswerToApplicationMailJob::dispatch($application, $answer);
+        
         return redirect('manager');
     }
 }

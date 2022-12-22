@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreApplicationRequest;
 use App\Jobs\ApplicationCreatedMailJob;
 use App\Models\Application;
-use Illuminate\Http\Request;
+
 
 class ApplicationController extends Controller
 {
@@ -19,7 +19,7 @@ class ApplicationController extends Controller
     public function store(StoreApplicationRequest $request)
     {
 
-        if ($this->isMaySendApplication($request))
+        if ($this->canISendApplication($request))
             return redirect()->back()->with('error', 'You may send application only one times in a day !');
 
         if ($request->hasFile('file')) {
@@ -40,15 +40,16 @@ class ApplicationController extends Controller
     }
 
 
-
-    private function isMaySendApplication($request)
+    /**
+     * Client can send application one times in a day
+     */
+    private function canISendApplication($request)
     {
         $oldApplication = $request->user()->applications()->latest()->first();
         if ($oldApplication) {
             $created = strtotime($oldApplication->created_at);
             $now = strtotime(now());
-            // return $now - $created <= 86400;
-            return $now - $created <= 10;
+            return $now - $created <= 86400;
         }
         return false;
     }

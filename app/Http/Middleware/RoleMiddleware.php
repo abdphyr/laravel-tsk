@@ -10,9 +10,9 @@ class RoleMiddleware
     public function handle(Request $request, Closure $next, $role)
     {
         if ($role === 'manager') {
-            return !$this->isManager($request) ? redirect('client') : $next($request);
+            return !$this->isManager($request) ? abort(403) : $next($request);
         } elseif ($role === 'client') {
-            return $this->isManager($request) ? redirect('manager') : $next($request);
+            return $this->isManager($request) ? abort(403) : $next($request);
         } elseif ($role === 'unknown') {
             return $this->isManager($request) ? redirect('manager') : redirect('client');
         }
