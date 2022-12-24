@@ -2,7 +2,7 @@
 
 ## About Project
 
-- This is laravel app created by me.
+- This is laravel app created by Abdumannon.
 - This project include `Auth`, `Mail`, `Queue`, `Role middleware`, `Question-Answer with email`, `CRUD`,  `mysql`. 
 
 
